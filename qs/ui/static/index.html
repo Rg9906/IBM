@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QueueShield console</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <div class="brand">QueueShield <span class="muted">simulator console</span></div>
+  <div id="h-scn" class="pill">no scenario</div>
+  <div id="h-time" class="pill">t = 0 s</div>
+  <div id="h-state" class="pill state MONITORING">MONITORING</div>
+  <div id="h-eps" class="pill">0 events</div>
+  <div id="h-conn" class="pill bad">stream offline</div>
+  <nav><button class="tab on" data-tab="live">Live</button><button class="tab" data-tab="arena">Policy arena</button></nav>
+</header>
+
+<section id="tab-live">
+  <div class="bar">
+    <label>API key <input id="key" type="password" size="12" placeholder="X-QS-Key"></label>
+    <label>Seed <input id="seed" type="number" value="1" min="1" style="width:5em"></label>
+    <label>Speed <select id="speed"><option>1</option><option>2</option><option selected>4</option><option>10</option><option>20</option></select>x</label>
+    <label>Approval <select id="auto"><option value="0">human approves</option><option value="1">auto-operator</option></select></label>
+    <label>Operator <input id="op" value="operator1" size="10"></label>
+    <span class="grow"></span>
+    <button data-scn="S0">Normal</button><button data-scn="S1">Surge</button><button data-scn="S2">Gateway slowdown</button>
+    <button data-scn="S3">Bank slowdown</button><button data-scn="S4">Retry storm</button><button data-scn="S6">Verification storm</button>
+    <button data-scn="S5">Surge + slowdown</button><button data-scn="S7">Silent drift</button>
+    <button id="pause">Pause</button><button id="stop">Stop</button>
+  </div>
+  <div id="banner" class="banner hidden"></div>
+  <div class="grid">
+    <div class="panel"><h3>Segment heat map <span class="muted">anomaly score, click a cell</span></h3>
+      <table id="heat"></table><div id="verdict" class="muted"></div></div>
+    <div class="panel"><h3>Selected segment <span id="seg-name" class="muted"></span></h3>
+      <canvas id="metrics" width="560" height="190"></canvas>
+      <div class="legend"><i style="background:#f87171"></i>timeout ratio <i style="background:#60a5fa"></i>p95 (s) <i style="background:#fbbf24"></i>queue delay (s) <i style="background:#a3e635"></i>pending frac</div></div>
+    <div class="panel"><h3>Detector race <span class="muted">D0 and D3 run live; D1 and D2 are offline arms</span></h3>
+      <canvas id="race" width="560" height="120"></canvas></div>
+    <div class="panel"><h3>Cascade forecast <span class="muted">p_stuck per gateway, if nothing changes</span></h3>
+      <canvas id="cascade" width="560" height="150"></canvas>
+      <div class="legend"><i style="background:#f87171"></i>G1 <i style="background:#60a5fa"></i>G2 <i style="background:#a3e635"></i>G3 <span class="muted">dashed: 0.5</span></div></div>
+    <div class="panel"><h3>Verification</h3><div id="verif" class="kv"></div></div>
+    <div class="panel"><h3>Platform</h3><div id="perf" class="kv"></div></div>
+    <div class="panel wide"><h3>Recommendation</h3><div id="rec" class="muted">No pending recommendation.</div></div>
+    <div class="panel wide"><h3>Decision log <a href="/v1/decisions.csv" class="muted">export csv</a></h3>
+      <table id="dlog"><thead><tr><th>sim t</th><th>rec</th><th>operator</th><th>decision</th><th>applied</th><th>note</th></tr></thead><tbody></tbody></table>
+      <div id="applied" class="muted"></div></div>
+  </div>
+</section>
+
+<section id="tab-arena" class="hidden">
+  <p class="muted">Committed policy-arena results on test set C (results/arena.json), medians over paired seeds, in simulation. U0 nothing, U1 textbook failover, U2 disciplined clients, U3 QueueShield with a simulated operator.</p>
+  <div id="arena"></div>
+</section>
+<script src="/static/app.js"></script>
+</body>
+</html>

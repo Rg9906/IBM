@@ -61,6 +61,7 @@ The two sides never import each other (`qs/core` must not import `qs/sim` and vi
 | `qs/core/policy.py`, `actions.py` | Rules mapping state to eligible actions; approval, rollback and the safety invariants |
 | `qs/core/pipeline.py` | Wires everything; the contract used by API, live runner and harness |
 | `qs/forecast/` | Cascade Forecaster: dataset generation, stuck grid, boosted ensemble, training and evaluation |
+| `qs/ui/static/` | Operator console: plain HTML, JS and CSS, no external assets. Live tab (heat map, selected-segment metrics, detector race for D0 and D3, per-gateway `p_stuck` timeline, verification panel, recommendation card, decision log) and a Policy arena tab over `results/arena.json` |
 | `qs/store/` | SQLite (WAL) store, schema in `schema.sql`; writes are batched off the request path |
 | `qs/api/app.py`, `live.py` | FastAPI app (HTTP API v1, SSE) and the closed-loop runner |
 | `qs/eval/` | Replay, row cache, detection scoring, paired statistics, policy arena (`universes.py`), simulated operator (`arena.py`) |
@@ -90,6 +91,11 @@ Implemented in `qs/api/app.py`. Errors use `{"error", "detail"}`.
 | `GET /v1/actions/pending` | key | Approved actions for the simulator to apply |
 | `POST /v1/actions/{id}/applied` | key | Simulator acknowledgement |
 | `POST /v1/sim/scenario` | key | Start a scenario: `scenario`, `seed`, `speed`, `arm`, `auto_operator`, `operator_delay_ms` |
+| `POST /v1/sim/control` | key | `pause`, `resume` or `stop` the running scenario |
+| `GET /v1/sim/truth` | none | Injected ground truth of the running scenario, for the demo console only |
+| `GET /v1/decisions`, `/v1/decisions.csv` | none | Decision log as JSON and CSV |
+| `GET /v1/arena` | none | Committed policy-arena runs for the console's arena tab |
+| `GET /`, `/static/*` | none | The operator console |
 | `GET /v1/metrics` | none | Ingest counters, model versions, detector mode |
 | `GET /v1/health` | none | Liveness and global state |
 

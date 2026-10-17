@@ -23,13 +23,13 @@ A `Makefile` wraps these (untested end to end). Run from the repository root.
 
 ## Environment notes
 
-- The machine's default Python had no pytest installed when the docs were written; use a venv with the packages listed in README.
+- Use the repo venv: `py -m venv .venv`, then `pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r requirements.txt`. scikit-learn must stay 1.8.0 for the committed forecaster pickle.
 - Windows host, PowerShell or Git Bash. SSL interception on the dev machine required `pip --trusted-host` earlier (DEVIATIONS WP-01).
 - `prof.out` and `artifacts/rows/*.pkl` are generated; do not edit.
 
 ## Current status and open items
 
-Done: WP-01 to WP-11 and WP-13 (committed results on set C). Not done: WP-12 dashboard (no `qs/ui`), WP-00/WP-14 LinuxONE check and benchmarks, WP-15 video and submission, pyproject and exact dependency pins (`requirements.txt` has lower bounds only), public benchmark, further ablations.
+Done: WP-01 to WP-13 (committed results on set C; console in `qs/ui/static`, not yet checked visually), report and demo script (docs/REPORT.md, docs/DEMO.md), pyproject, requirements. Not done: WP-00/WP-14 LinuxONE check and benchmarks, demo video, public benchmark, further ablations (RRCF/EWS arms).
 
 Known issues worth knowing before changing things:
 - D3 does not beat D1 on delay and misses S2 and S7 almost entirely; it exceeds the false-alert budget on S0+S1 (4.24/h vs 1.5) on set C.

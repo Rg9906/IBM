@@ -12,6 +12,7 @@ Start with the pieces that matter most:
 | [docs/EVAL.md](docs/EVAL.md) | Pre-registered hypotheses and evaluation protocol |
 | [results/summary.md](results/summary.md) | Generated result tables (set C) |
 | [docs/RESULTS.md](docs/RESULTS.md) | Plain-language reading of those results, including where QueueShield does not win |
+| [docs/REPORT.md](docs/REPORT.md), [docs/DEMO.md](docs/DEMO.md) | Technical report; demo script and checklist |
 | [docs/CLAIMS.md](docs/CLAIMS.md) | What may and may not be said about the project |
 | [docs/DEVIATIONS.md](docs/DEVIATIONS.md) | Every assumption and departure from the blueprint |
 | [docs/QueueShield v2 Complete Implementation Blueprint (IBM Z Datathon 2026).md](docs/QueueShield%20v2%20Complete%20Implementation%20Blueprint%20(IBM%20Z%20Datathon%202026).md) | The full specification |
@@ -28,15 +29,15 @@ Start with the pieces that matter most:
 | WP-10: policy engine, actions, simulated operator | Done |
 | WP-11: pipeline, HTTP API v1, live runner | Done (known gaps in DEVIATIONS) |
 | WP-13: evaluation harness and set C results | Done, scored once |
-| WP-12: dashboard | **Not built** (the API and SSE stream exist; there is no `qs/ui`) |
+| WP-12: dashboard (`qs/ui/static`, served at `/`) | Built; exercised through its API and syntax-checked, **not yet checked visually in a browser** |
 | WP-00 and WP-14: LinuxONE environment check and benchmarks | **Not done**; no platform measurements exist |
-| WP-15: demo video and submission | **Not done** |
-| `Makefile`, `requirements.txt` | Present, untested (requirements are lower bounds, not pins). `pyproject.toml` is not present |
+| WP-15: report and demo script | [docs/REPORT.md](docs/REPORT.md) and [docs/DEMO.md](docs/DEMO.md) written; **video not recorded** |
+| `pyproject.toml`, `requirements.txt`, `Makefile` | Present. Tests verified (134 pass); the Makefile was not run (`make` is not installed on the dev machine) |
 | Public benchmark (blueprint 17.8) and ablations beyond D3:M and D3:R | **Not run** |
 
 ## Setup
 
-Requirements: Python 3.10 or newer (developed on 3.11). `requirements.txt` gives lower bounds only (scikit-learn and rrcf versions are unverified). The code imports:
+Requirements: Python 3.10 or newer (developed on 3.11). `requirements.txt` has lower bounds except scikit-learn, pinned to 1.8.0 because the committed forecaster model was pickled with it. The code imports:
 
 `numpy`, `pydantic` (v2), `pyyaml`, `scikit-learn`, `rrcf`, `fastapi`, `uvicorn` (to serve the API), `pytest` (tests), and optionally `matplotlib` (the stuck heat map only). `scipy` is optional: without it the Wilcoxon p-values in `qs/eval/stats.py` are left empty.
 
@@ -56,7 +57,7 @@ Run everything from the repository root; scripts read `configs/` and write under
 python -m pytest -q            # tests/unit, one file per work package
 ```
 
-Each `tests/unit/test_wpNN.py` holds the acceptance tests for that work package. The test suite has not been re-run as part of writing this documentation; run it before relying on it.
+Each `tests/unit/test_wpNN.py` holds the acceptance tests for that work package. 134 tests passed on Python 3.13 with the versions in `requirements.txt`.
 
 ## Run the live demo (API only)
 
@@ -65,7 +66,7 @@ set QS_API_KEY=changeme        # PowerShell: $env:QS_API_KEY="changeme"
 uvicorn --factory qs.api.app:create_app --port 8000
 ```
 
-Then start a scenario and watch the stream:
+Open http://localhost:8000 for the console (paste the key into the box), or run `python scripts/demo.py`. Over HTTP:
 
 ```bash
 curl -X POST localhost:8000/v1/sim/scenario -H "X-QS-Key: changeme" -H "Content-Type: application/json" \

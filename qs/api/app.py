@@ -15,7 +15,10 @@ import time
 from typing import Optional
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
-from fastapi.responses import JSONResponse, StreamingResponse
+from pathlib import Path
+
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 
 from qs.api.live import LiveRun
 from qs.config import OperatorConfig, PipelineConfig
@@ -25,6 +28,7 @@ from qs.schema import Decision
 
 log = logging.getLogger("qs.api")
 MAX_BATCH = 500
+UI_DIR = Path(__file__).resolve().parent.parent / "ui" / "static"
 
 
 class State:
@@ -39,6 +43,8 @@ class State:
         self.run: Optional[LiveRun] = None
         self.thread: Optional[threading.Thread] = None
         self.stop = threading.Event()
+        self.paused = False
+        self.scenario = None
         self.ingest_ts: list = []
         self.applied_reports: list = []
 
@@ -103,7 +109,9 @@ def create_app(models_dir: str = "artifacts/models", api_key: Optional[str] = No
                     segs["/".join(r.segment)] = {"eligible": r.eligible, "flags": r.flags,
                                                  "f": {k: (None if v != v else v) for k, v in r.f.items()},
                                                  "score": last.scores.get(r.segment), "p_stuck": last.p_stuck.get(r.segment)}
-            return {"tick_ts": last.tick_ts if last else None, "state": last.state.value if last else "MONITORING",
+            return {"scenario": st.scenario, "paused": st.paused,
+                    "sim_t_ms": st.run.t if st.run else None, "events": st.run.events if st.run else 0,
+                    "tick_ts": last.tick_ts if last else None, "state": last.state.value if last else "MONITORING",
                     "degraded": last.degraded if last else [], "segments": segs,
                     "verdict": last.localization.model_dump(mode="json") if last and last.localization else None}
 
@@ -168,11 +176,16 @@ def create_app(models_dir: str = "artifacts/models", api_key: Optional[str] = No
                 if body.get("auto_operator", False) else None
             st.run = LiveRun(sc, seed, body.get("arm", "U3"), pipeline=st.pipe, operator=op, on_tick=after_tick)
             st.events.clear()
+            st.paused = False
+            st.scenario = {"scenario": sc, "seed": seed, "speed": speed}
         stop = st.stop
 
         def loop() -> None:
             while not st.run.done() and not stop.is_set():
                 t0 = time.monotonic()
+                if st.paused:
+                    time.sleep(0.1)
+                    continue
                 with st.lock:
                     st.run.step(1000)
                 time.sleep(max(0.0, 1.0 / max(speed, 0.1) - (time.monotonic() - t0)))
@@ -199,6 +212,56 @@ def create_app(models_dir: str = "artifacts/models", api_key: Optional[str] = No
             m = dict(st.pipe.ing.metrics)
         return {"ingest": m, "pending_in_buffer": st.pipe.ing.pending(),
                 "models": st.pipe.model_versions, "detector_mode": st.pipe.d3.mode}
+
+    @app.post("/v1/sim/control", dependencies=[Depends(need_key)])
+    async def control(request: Request):
+        body = await request.json()
+        act = body.get("action")
+        if act not in {"pause", "resume", "stop"}:
+            return err(422, "bad_action", str(act))
+        if act == "stop":
+            st.stop.set()
+        else:
+            st.paused = act == "pause"
+        return {"paused": st.paused}
+
+    @app.get("/v1/sim/truth")
+    def truth():
+        """Injected ground truth of the running scenario. For the demo console only; qs/core never reads it."""
+        with st.lock:
+            return list(st.run.truth) if st.run else []
+
+    @app.get("/v1/decisions")
+    def decisions():
+        with st.lock:
+            return [{"rec_id": d.rec_id, "decision": d.decision.value, "operator": d.operator, "ts": d.decided_ts,
+                     "note": d.note, "actions": d.applied} for d in st.pipe.actions.log]
+
+    @app.get("/v1/decisions.csv")
+    def decisions_csv():
+        with st.lock:
+            rows = []
+            for d in st.pipe.actions.log:
+                rec = st.pipe.recommendations.get(d.rec_id)
+                rows.append([d.decided_ts, d.rec_id, rec.incident_id if rec else "", d.operator, d.decision.value,
+                             "|".join(d.applied), d.note or "",
+                             json.dumps(rec.model_versions) if rec else "", rec.features_sha256 if rec else ""])
+        head = "ts,rec_id,incident_id,operator,decision,actions_approved,note,model_versions,features_sha256"
+        body = "\n".join(",".join('"%s"' % str(c).replace('"', '""') for c in r) for r in rows)
+        return PlainTextResponse(head + "\n" + body + "\n", media_type="text/csv")
+
+    @app.get("/v1/arena")
+    def arena():
+        """Committed policy-arena runs (results/arena.json) for the dashboard's arena tab."""
+        f = Path("results/arena.json")
+        return json.loads(f.read_text())["runs"] if f.exists() else []
+
+    @app.get("/", include_in_schema=False)
+    def index():
+        return FileResponse(UI_DIR / "index.html")
+
+    if UI_DIR.exists():
+        app.mount("/static", StaticFiles(directory=UI_DIR), name="static")
 
     @app.get("/v1/health")
     def health():

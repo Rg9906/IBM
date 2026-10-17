@@ -1,7 +1,7 @@
 # Targets mirror the README "Reproduce the evaluation" order. Run from the repository root.
 PY ?= python
 
-.PHONY: test serve configs calibrate datasets train rows tune eval-detect eval-arena eval-s6 eval-forecast report
+.PHONY: demo export-log test serve configs calibrate datasets train rows tune eval-detect eval-arena eval-s6 eval-forecast report
 
 test:
 	$(PY) -m pytest -q
@@ -43,3 +43,9 @@ eval-forecast:
 
 report:
 	$(PY) scripts/run_eval.py report
+
+demo:
+	$(PY) scripts/demo.py
+
+export-log:
+	curl -s localhost:8000/v1/decisions.csv -o artifacts/results/decision_log.csv

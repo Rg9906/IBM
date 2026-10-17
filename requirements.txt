@@ -1,10 +1,11 @@
 # Lower bounds from the versions seen on the dev machine (numpy 2.5, pydantic 2.13, fastapi 0.111, pytest 9.1).
-# Not exact pins: scikit-learn and rrcf were not installed there, so their versions are unverified (blueprint 19.1 lists both).
+# scikit-learn is pinned to 1.8.0: the committed artifacts/models/*.pkl were written with it and do not load under 1.9.1.
+# Full test suite (130 tests) passed on Python 3.13 with numpy 2.5.4, scipy 1.18.1, pydantic 2.14.1, fastapi 0.143.3, rrcf 0.4.4.
 numpy>=2.0
 scipy>=1.11
 pydantic>=2.5
 PyYAML>=6.0
-scikit-learn>=1.5
+scikit-learn==1.8.0
 rrcf>=0.4
 fastapi>=0.111
 uvicorn>=0.30
