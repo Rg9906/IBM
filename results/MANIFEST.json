@@ -1,0 +1,22 @@
+{
+ "git_commit": "8c80e2befcdaf624d5e01fc2a92b78162907ada1",
+ "config_sha256": {
+  "detectors_frozen.yaml": "e8b41b0ab9ebc6a78602f8eb3cfc7134b808bd78bf09b1d18e9806cc25eeb20e",
+  "detectors_frozen_arms.json": "2f84dee0a7e74baf3dcd4d1a5d2af048fef314d8d356a9a880645f2def824a7e",
+  "governor.yaml": "6c371e733d64327b0578476be2065be7b52e4be941d034bf06fbeca905c6484a",
+  "operators.yaml": "ea8a964f1d54d619fa3ee3280072b7dec118a16caec477787b4ab90347b404e7",
+  "policy.yaml": "7622938803318f80723ec5c25a6a03f0c4df9de28de588617f429044fb3e83d4",
+  "sim_default.yaml": "ac9fd7fb59e26c4d50a060dc48321ad57c7b7624dd58702b2dae28822ffda724"
+ },
+ "stages": {
+  "arena.json": 1792246138.6913993,
+  "detection.json": 1792243908.8889282,
+  "forecast_false_critical.json": 1792244437.548284,
+  "MANIFEST.json": 1792243917.7564485,
+  "s6.json": 1792244625.4009254
+ },
+ "wall_s": {
+  "detection.json": 158.22879979999925,
+  "arena.json": 525.9533635000001
+ }
+}

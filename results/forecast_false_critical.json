@@ -1,0 +1,26 @@
+{
+ "S0": {
+  "runs": 30,
+  "sim_hours": 4.958333333333333,
+  "critical_events_at_0.5": 0,
+  "critical_events_at_tuned": 0,
+  "per_hour_at_0.5": 0.0,
+  "per_hour_at_tuned": 0.0
+ },
+ "S1": {
+  "runs": 30,
+  "sim_hours": 4.958333333333333,
+  "critical_events_at_0.5": 36,
+  "critical_events_at_tuned": 36,
+  "per_hour_at_0.5": 7.260504201680673,
+  "per_hour_at_tuned": 7.260504201680673
+ },
+ "S5": {
+  "runs": 30,
+  "sim_hours": 4.958333333333333,
+  "critical_events_at_0.5": 91,
+  "critical_events_at_tuned": 87,
+  "per_hour_at_0.5": 18.35294117647059,
+  "per_hour_at_tuned": 17.54621848739496
+ }
+}

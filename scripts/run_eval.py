@@ -265,7 +265,8 @@ def stage_report(a) -> None:
             for metric in ("recovery_s", "excess_retries", "peak_queue"):
                 p = arena_pairs(runs, "S4", metric, x, y)
                 md = "-" if p["median_diff"] is None else f"{p['median_diff']:.1f} [{p['lo']:.1f}, {p['hi']:.1f}]"
-                L.append(f"| {x} vs {y} | {metric} | {p['n']} | {md} | {'-' if p['wilcoxon_p'] is None else f'{p['wilcoxon_p']:.3g}'} |")
+                wp = "-" if p["wilcoxon_p"] is None else f"{p['wilcoxon_p']:.3g}"
+                L.append(f"| {x} vs {y} | {metric} | {p['n']} | {md} | {wp} |")
         sh = [(r["universe"], r["shift_applied"], r["config_id"], r["peak_queue"], r["recovery_s"]) for r in runs
               if r["scenario"] == "S3" and not (r["universe"] == "U3" and r["operator_delay_ms"] != 20_000)]
         by: dict = defaultdict(dict)
