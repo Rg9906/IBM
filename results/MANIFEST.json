@@ -1,5 +1,5 @@
 {
- "git_commit": "8c80e2befcdaf624d5e01fc2a92b78162907ada1",
+ "git_commit": "23185aceb3cbb56e757730e6afde609d6d0a6b62",
  "config_sha256": {
   "detectors_frozen.yaml": "e8b41b0ab9ebc6a78602f8eb3cfc7134b808bd78bf09b1d18e9806cc25eeb20e",
   "detectors_frozen_arms.json": "2f84dee0a7e74baf3dcd4d1a5d2af048fef314d8d356a9a880645f2def824a7e",
@@ -12,7 +12,7 @@
   "arena.json": 1792246138.6913993,
   "detection.json": 1792243908.8889282,
   "forecast_false_critical.json": 1792244437.548284,
-  "MANIFEST.json": 1792243917.7564485,
+  "MANIFEST.json": 1792246144.7916265,
   "s6.json": 1792244625.4009254
  },
  "wall_s": {
