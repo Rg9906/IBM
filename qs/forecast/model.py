@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Optional
 
 import numpy as np
+from threadpoolctl import threadpool_limits
 
 from qs.forecast.dataset import DELTA_TICKS, EST_SERVICE_S, FEATURES
 from qs.forecast.grid import StuckGrid
@@ -71,7 +72,8 @@ class CascadeForecaster:
             if v[1] < CALM_DELAY and v[0] < CALM_Q and v[5] < CALM_TIMEOUT:
                 p = 0.0
             elif self.ensemble is not None:
-                p = float(self.ensemble.predict_proba(v[None, :])[0, 1])
+                with threadpool_limits(limits=1):          # one row: thread start-up costs more than the work
+                    p = float(self.ensemble.predict_proba(v[None, :])[0, 1])
             else:
                 p = float(self.grid.predict(v[FEATURES.index("delay_frac")], v[FEATURES.index("orbit_frac")])[0])
             e = self._ema.get(r.segment)

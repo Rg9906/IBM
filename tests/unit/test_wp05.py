@@ -16,7 +16,7 @@ NAN = math.nan
 
 def row(f=None, z=None, base=None, seg=SEG, tick=5000, eligible=True):
     ff = {k: 0.0 for k in FEATURES}
-    ff.update(arrival_rate=50.0, success_ratio=0.98, queue_delay_est=0.1)
+    ff.update(arrival_rate=50.0, success_ratio=0.98, queue_delay_est=0.1, latency_ratio=2.0)
     ff.update(f or {})
     zz = {k: 0.0 for k in FEATURES}
     zz.update(z or {})
@@ -41,6 +41,7 @@ def test_each_signal_fires_and_stays_silent():
     assert rules.signals(row(), CFG) == []
     assert rules.signals(row(z={"latency_ratio": 2.6}), CFG) == ["S_lat"]
     assert rules.signals(row(z={"latency_ratio": 2.4}), CFG) == []
+    assert rules.signals(row(f={"latency_ratio": 1.2}, z={"latency_ratio": 9.0}), CFG) == []   # absolute floor
     assert rules.signals(row(f={"timeout_ratio": 0.05}, z={"timeout_ratio": 3.5}), CFG) == ["S_to"]
     # z is high but the absolute rise is under 0.02
     assert rules.signals(row(f={"timeout_ratio": 0.01}, z={"timeout_ratio": 9.0}), CFG) == []
@@ -124,7 +125,7 @@ def test_rules_only_arm_runs_without_model():
 
 
 def test_model_nan_falls_back_to_rules_and_flags_degraded():
-    sig_row = row(z={"latency_ratio": 3.0}, f={"raf": 1.5}, tick=5000)
+    sig_row = row(z={"timeout_ratio": 3.5}, f={"raf": 1.5, "timeout_ratio": 0.05}, tick=5000)
     # arrival log-ratio, latency, queue-growth ratio and pending_frac are NaN: over half the inputs, so no vector
     for k in ("arrival_rate", "latency_ratio", "load_over_capacity", "pending_frac", "queue_delay_est"):
         sig_row.f[k] = NAN

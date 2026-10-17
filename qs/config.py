@@ -77,13 +77,14 @@ class DetectorConfig:
     iforest_max_samples: int = 256
     # D3 signal thresholds (blueprint 11.2)
     z_lat: float = 2.5
+    lat_min_ratio: float = 1.5      # absolute floor on latency_ratio, like to_abs and rej_abs (tuned on set B)
     z_to: float = 3.0
     to_abs: float = 0.02
     raf_mult: float = 1.25
     z_rej: float = 3.0
     rej_abs: float = 0.01
     q_mult: float = 1.5
-    q_min_delay_s: float = 0.05
+    q_min_delay_s: float = 0.25     # tuned on set B (was 0.05)
     surge_z: float = 2.5
     surge_max_signals: int = 1
     queue_growth_eps: float = 0.5   # items/s below which the queue counts as not growing

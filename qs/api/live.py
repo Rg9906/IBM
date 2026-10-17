@@ -22,7 +22,7 @@ class LiveRun:
     def __init__(self, scenario: str, seed: int, arm: str = "U3", sim_cfg: Optional[SimConfig] = None,
                  params: Optional[ScenarioParams] = None, pipeline: Optional[Pipeline] = None,
                  operator: Optional[SimulatedOperator] = None, horizon_ms: Optional[int] = None,
-                 on_tick: Optional[Callable] = None, models_dir: str = "artifacts/models") -> None:
+                 on_tick: Optional[Callable] = None, sink: Optional[Callable] = None, models_dir: str = "artifacts/models") -> None:
         params = params or ScenarioParams(scenario=scenario)
         cfg = scenarios.effective_cfg(sim_cfg or SimConfig(), params)
         spec = scenarios.build(params)
@@ -34,6 +34,7 @@ class LiveRun:
         self.pipe = pipeline or Pipeline(PipelineConfig(), models_dir=models_dir)
         self.operator = operator
         self.on_tick = on_tick
+        self.sink = sink              # optional tap on every simulator event batch (metrics collectors)
         self.t = 0
         self.tick_ms = self.pipe.cfg.tick_ms
         self._next_tick = self.tick_ms
@@ -50,6 +51,8 @@ class LiveRun:
         evs = self.engine.drain()
         self.events += len(evs)
         if evs:
+            if self.sink:
+                self.sink(evs)
             self.pipe.ingest(evs)
         while self.t >= self._next_tick + 2000 or (self.done() and self._next_tick <= self.t):
             self._tick(self._next_tick)
@@ -78,6 +81,8 @@ class LiveRun:
         late = self.engine.drain()          # ACTION_APPLIED events
         if late:
             self.events += len(late)
+            if self.sink:
+                self.sink(late)
             self.pipe.ingest(late)
 
     def run(self) -> "LiveRun":

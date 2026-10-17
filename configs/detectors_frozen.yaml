@@ -1,6 +1,6 @@
-# Skeleton. Tuned and frozen on set B (blueprint 11.7); these are placeholders.
-theta0: 0.90
-sensitivity: 1.0
-cusum_h: 5.0
-tau: 0.99
-tau_hi: 0.999
+# Frozen on set B at the equal false-alert budget (blueprint 11.7). Do not edit after the eval-freeze tag.
+# created 2026-10-17T13:23:23Z, budget 1.5 merged false alerts per simulated hour, 120 runs
+theta0: 0.973281
+sensitivity: 1.71642
+cusum_h: 22.8757
+tau: 1

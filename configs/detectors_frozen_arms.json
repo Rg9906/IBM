@@ -1,0 +1,32 @@
+{
+ "D0": {
+  "param": 0.9732812500000001,
+  "fa_per_hour_on_B": 0.2847052541405634,
+  "budget_met": true
+ },
+ "D1": {
+  "param": 1.7164207086506829,
+  "fa_per_hour_on_B": 1.2337227679424414,
+  "budget_met": true
+ },
+ "D2": {
+  "param": 22.875732003183955,
+  "fa_per_hour_on_B": 1.3286245193226291,
+  "budget_met": true
+ },
+ "D3:M": {
+  "param": 1.0,
+  "fa_per_hour_on_B": 9.585076889398968,
+  "budget_met": false
+ },
+ "D3": {
+  "param": 1.0,
+  "fa_per_hour_on_B": 1.4235262707028171,
+  "budget_met": true
+ },
+ "D3:R": {
+  "param": null,
+  "fa_per_hour_on_B": 0.949017513801878,
+  "budget_met": null
+ }
+}

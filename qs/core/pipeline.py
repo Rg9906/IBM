@@ -78,6 +78,7 @@ class Pipeline:
         self._last_event_ts: Optional[int] = None
         self._now = 0
         self._rec_key: dict = {}          # incident id -> (severity, verdict) of the live recommendation
+        self._conf: dict = {}             # incident id -> highest alert confidence seen
         self._degraded_rec = False
         self.recommendations: dict = {}
         self.last: Optional[TickResult] = None
@@ -189,6 +190,7 @@ class Pipeline:
             inc = self.lifecycle.on_alert(al, primary)
             if inc is not None:
                 touched[inc.incident_id] = inc
+                self._conf[inc.incident_id] = max(self._conf.get(inc.incident_id, 0.0), al.confidence)
         for inc in self.lifecycle._live():            # forecast escalation: alerts fire once, severity can still rise
             p = max([v for k, v in res.p_stuck.items() if overlaps(inc.segment, k)] or [0.0])
             if inc.severity is not OperatingState.CRITICAL and p >= self.cfg.detectors.forecast_critical:
@@ -244,7 +246,7 @@ class Pipeline:
             healthy = self._bank_healthy_elsewhere(loc.primary[1], loc.primary[2], bad, exp)
         alert = next((a for a in res.alerts if overlaps(inc.segment, a.segment)), None)
         reasons = list(alert.reasons) if alert else []
-        conf = alert.confidence if alert else 0.5
+        conf = max(alert.confidence if alert else 0.0, self._conf.get(inc.incident_id, 0.0)) or 0.5
         cd = self.forecaster.countdown_s(("gateway", gname, "*")) if gname else None
         ctx = PolicyContext(
             incident_id=inc.incident_id, segment=inc.segment, severity=inc.severity, localization=loc,

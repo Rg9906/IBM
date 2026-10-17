@@ -69,8 +69,10 @@ def build(p: ScenarioParams) -> ScenarioSpec:
     if s == "S0":
         return sp
     if s in ("S1", "S5"):
-        sp.rate_fn = _surge_rate_fn(on, on + 80_000, p.flash_mult)
-        sp.rate_max_mult = max(1.6, p.flash_mult)
+        # The flash must stay below capacity (rho <= 0.95) or it is an overload, not a benign surge.
+        flash = max(1.6, min(p.flash_mult, 0.95 / p.utilisation))
+        sp.rate_fn = _surge_rate_fn(on, on + 80_000, flash)
+        sp.rate_max_mult = max(1.6, flash)
         sp.truth.append(_truth(p, 0, on, on + 180_000, "platform", "*", "*", "surge", 1.6, False))
     if s in ("S2", "S5"):
         sp.modifiers.append(Modifier("gw_service", on, on + d, v0=p.magnitude, gateway=p.gateway))

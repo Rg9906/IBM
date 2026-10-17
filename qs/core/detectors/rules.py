@@ -17,7 +17,8 @@ def signals(row, cfg: DetectorConfig) -> list:
     """Names of the corroborating signals that are true for this FeatureRow."""
     f, z, b = row.f, row.z, row.base
     out = []
-    if _ok(z["latency_ratio"]) and z["latency_ratio"] >= cfg.z_lat:
+    if _ok(z["latency_ratio"]) and z["latency_ratio"] >= cfg.z_lat and _ok(f["latency_ratio"]) \
+            and f["latency_ratio"] >= cfg.lat_min_ratio:
         out.append("S_lat")
     if _ok(z["timeout_ratio"]) and z["timeout_ratio"] >= cfg.z_to and _ok(b["timeout_ratio"]) \
             and f["timeout_ratio"] - b["timeout_ratio"] >= cfg.to_abs:
