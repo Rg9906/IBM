@@ -1,5 +1,13 @@
-# Skeleton. Values mirror blueprint 15.1 and 14.4.
+# Mirrors blueprint 15.1, 15.3 and 14.4. Values load into qs.config.PolicyConfig.
 throttle_rate_fraction: 0.10
 throttle_retry_after_ms: 2000
+throttle_retry_after_max_ms: 8000
+starvation_guard_ms: 2000
 shift_max_fraction: 0.25
+shift_ramp_ms: 10000
+shift_min_source_share: 0.05
 shift_min_spare: 0.30
+rollback_clean_ticks: 6
+localizer_hi: 0.67
+localizer_lo: 0.50
+approve_min_confidence: 0.6
