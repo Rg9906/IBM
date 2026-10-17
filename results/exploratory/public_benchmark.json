@@ -1,0 +1,204 @@
+{
+ "dataset": "NAB realAWSCloudwatch (Numenta, AGPL-3.0; not redistributed)",
+ "budget_fa_per_day": 1.0,
+ "tune_series": [
+  "ec2_cpu_utilization_53ea38",
+  "ec2_cpu_utilization_825cc2",
+  "ec2_disk_write_bytes_1ef3de",
+  "rds_cpu_utilization_e47b3b",
+  "ec2_network_in_5abac7"
+ ],
+ "test_series": [
+  "ec2_cpu_utilization_24ae8d",
+  "ec2_cpu_utilization_5f5533",
+  "ec2_network_in_257a54",
+  "elb_request_count_8c0756",
+  "rds_cpu_utilization_cc0c53"
+ ],
+ "detectors": {
+  "CUSUM": {
+   "threshold": 5.463977465696436,
+   "tune": {
+    "false_alerts": 63,
+    "days": 63.618055555555564,
+    "fa_per_day": 0.9902849033948258,
+    "windows": 8,
+    "detected": 7,
+    "median_delay_min": 510.0
+   },
+   "test": {
+    "false_alerts": 32,
+    "days": 59.52777777777778,
+    "fa_per_day": 0.537564162389174,
+    "windows": 9,
+    "detected": 8,
+    "median_delay_min": 510.0
+   },
+   "test_per_series": {
+    "ec2_cpu_utilization_24ae8d": {
+     "false_alerts": 11,
+     "days": 11.899305555555555,
+     "fa_per_day": 0.9244236941931719,
+     "windows": 2,
+     "detected": 2,
+     "median_delay_min": 482.5
+    },
+    "ec2_cpu_utilization_5f5533": {
+     "false_alerts": 0,
+     "days": 11.899305555555555,
+     "fa_per_day": 0.0,
+     "windows": 2,
+     "detected": 1,
+     "median_delay_min": 510.0
+    },
+    "ec2_network_in_257a54": {
+     "false_alerts": 5,
+     "days": 11.902777777777779,
+     "fa_per_day": 0.4200700116686114,
+     "windows": 1,
+     "detected": 1,
+     "median_delay_min": 1015.0
+    },
+    "elb_request_count_8c0756": {
+     "false_alerts": 14,
+     "days": 11.92361111111111,
+     "fa_per_day": 1.1741409435061154,
+     "windows": 2,
+     "detected": 2,
+     "median_delay_min": 327.5
+    },
+    "rds_cpu_utilization_cc0c53": {
+     "false_alerts": 2,
+     "days": 11.902777777777779,
+     "fa_per_day": 0.16802800466744455,
+     "windows": 2,
+     "detected": 2,
+     "median_delay_min": 745.0
+    }
+   }
+  },
+  "IForest": {
+   "threshold": 1.0078623502732853,
+   "tune": {
+    "false_alerts": 63,
+    "days": 63.618055555555564,
+    "fa_per_day": 0.9902849033948258,
+    "windows": 8,
+    "detected": 5,
+    "median_delay_min": 550.0
+   },
+   "test": {
+    "false_alerts": 2,
+    "days": 59.52777777777778,
+    "fa_per_day": 0.03359776014932338,
+    "windows": 9,
+    "detected": 5,
+    "median_delay_min": 520.0
+   },
+   "test_per_series": {
+    "ec2_cpu_utilization_24ae8d": {
+     "false_alerts": 0,
+     "days": 11.899305555555555,
+     "fa_per_day": 0.0,
+     "windows": 2,
+     "detected": 0,
+     "median_delay_min": null
+    },
+    "ec2_cpu_utilization_5f5533": {
+     "false_alerts": 0,
+     "days": 11.899305555555555,
+     "fa_per_day": 0.0,
+     "windows": 2,
+     "detected": 1,
+     "median_delay_min": 505.0
+    },
+    "ec2_network_in_257a54": {
+     "false_alerts": 0,
+     "days": 11.902777777777779,
+     "fa_per_day": 0.0,
+     "windows": 1,
+     "detected": 1,
+     "median_delay_min": 1025.0
+    },
+    "elb_request_count_8c0756": {
+     "false_alerts": 1,
+     "days": 11.92361111111111,
+     "fa_per_day": 0.08386721025043681,
+     "windows": 2,
+     "detected": 2,
+     "median_delay_min": 517.5
+    },
+    "rds_cpu_utilization_cc0c53": {
+     "false_alerts": 1,
+     "days": 11.902777777777779,
+     "fa_per_day": 0.08401400233372228,
+     "windows": 2,
+     "detected": 1,
+     "median_delay_min": 520.0
+    }
+   }
+  },
+  "RRCF": {
+   "threshold": 0.9132751938975113,
+   "tune": {
+    "false_alerts": 63,
+    "days": 63.618055555555564,
+    "fa_per_day": 0.9902849033948258,
+    "windows": 8,
+    "detected": 5,
+    "median_delay_min": 510.0
+   },
+   "test": {
+    "false_alerts": 53,
+    "days": 59.52777777777778,
+    "fa_per_day": 0.8903406439570695,
+    "windows": 9,
+    "detected": 7,
+    "median_delay_min": 510.0
+   },
+   "test_per_series": {
+    "ec2_cpu_utilization_24ae8d": {
+     "false_alerts": 10,
+     "days": 11.899305555555555,
+     "fa_per_day": 0.8403851765392472,
+     "windows": 2,
+     "detected": 1,
+     "median_delay_min": 510.0
+    },
+    "ec2_cpu_utilization_5f5533": {
+     "false_alerts": 42,
+     "days": 11.899305555555555,
+     "fa_per_day": 3.529617741464838,
+     "windows": 2,
+     "detected": 2,
+     "median_delay_min": 185.0
+    },
+    "ec2_network_in_257a54": {
+     "false_alerts": 1,
+     "days": 11.902777777777779,
+     "fa_per_day": 0.08401400233372228,
+     "windows": 1,
+     "detected": 1,
+     "median_delay_min": 1015.0
+    },
+    "elb_request_count_8c0756": {
+     "false_alerts": 0,
+     "days": 11.92361111111111,
+     "fa_per_day": 0.0,
+     "windows": 2,
+     "detected": 2,
+     "median_delay_min": 527.5
+    },
+    "rds_cpu_utilization_cc0c53": {
+     "false_alerts": 0,
+     "days": 11.902777777777779,
+     "fa_per_day": 0.0,
+     "windows": 2,
+     "detected": 1,
+     "median_delay_min": 515.0
+    }
+   }
+  }
+ },
+ "wall_s": 144.91565730000002
+}

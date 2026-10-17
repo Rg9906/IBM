@@ -88,6 +88,7 @@ Implemented in `qs/api/app.py`. Errors use `{"error", "detail"}`.
 | `GET /v1/incidents` | none | Incidents, filter by `state`, `limit` |
 | `GET /v1/recommendations` | none | Recommendations, filter by `status` |
 | `POST /v1/recommendations/{rec_id}/decision` | key | Record an operator decision (409 if rejected by invariants) |
+| `GET /v1/rollbacks`, `POST /v1/rollbacks/{key}/approve` | none, key | Rollback proposals and their operator approval (SI-8) |
 | `GET /v1/actions/pending` | key | Approved actions for the simulator to apply |
 | `POST /v1/actions/{id}/applied` | key | Simulator acknowledgement |
 | `POST /v1/sim/scenario` | key | Start a scenario: `scenario`, `seed`, `speed`, `arm`, `auto_operator`, `operator_delay_ms` |
@@ -98,6 +99,8 @@ Implemented in `qs/api/app.py`. Errors use `{"error", "detail"}`.
 | `GET /`, `/static/*` | none | The operator console |
 | `GET /v1/metrics` | none | Ingest counters, model versions, detector mode |
 | `GET /v1/health` | none | Liveness and global state |
+
+Hardening after review (tests in `tests/unit/test_wp12.py`): request bodies capped at 1 MB and parsed defensively (4xx, not 500); events more than 60 s ahead of the stream clock are rejected (a far-future timestamp would otherwise make `advance()` loop for hours); NaN scores serialise as null; SSE ids are monotonic across scenarios and honour `Last-Event-ID`; blocking work runs in the threadpool; a crashed scenario thread sets `error` in `/v1/state`; client-supplied `decided_ts` is ignored; `GET /v1/actions/pending` no longer drains the queue while a live run owns it.
 
 Known gaps (from DEVIATIONS WP-11): wall-clock pacing is approximate, no key rotation, SSE keeps only the last 5000 events, `/v1/state` returns the latest tick only, read endpoints are unauthenticated. The blueprint's `/v1/metrics` latency histograms are not implemented.
 

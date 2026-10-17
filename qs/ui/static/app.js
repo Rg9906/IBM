@@ -4,7 +4,7 @@ const $ = (id) => document.getElementById(id);
 const GW = ["G1", "G2", "G3"], BK = ["B1", "B2", "B3", "B4", "B5"];
 const H = { gw: {}, seg: {} };                      // histories
 const S = { sel: "gateway/G1/*", truth: [], alerts: [], lastTick: null, lastChange: Date.now(), state: null,
-            rec: null, paused: false, degraded: false, scn: null };
+            rec: null, paused: false, degraded: false, scn: null, seen: new Set() };
 try { $("key").value = sessionStorage.getItem("qskey") || ""; } catch (e) { /* storage may be blocked */ }
 $("key").addEventListener("input", () => { try { sessionStorage.setItem("qskey", $("key").value); } catch (e) { /* ignore */ } });
 
@@ -28,7 +28,7 @@ document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () 
 }));
 document.querySelectorAll("[data-scn]").forEach((b) => b.addEventListener("click", async () => {
   try {
-    H.gw = {}; H.seg = {}; S.alerts = []; S.truth = []; S.lastTick = null; S.rec = null;
+    H.gw = {}; H.seg = {}; S.alerts = []; S.truth = []; S.lastTick = null; S.rec = null; S.seen = new Set();
     S.scn = await api("/v1/sim/scenario", "POST", { scenario: b.dataset.scn, seed: +$("seed").value,
       speed: +$("speed").value, auto_operator: $("auto").value === "1" });
     S.lastChange = Date.now();
@@ -58,7 +58,8 @@ async function pollState() {
   if (st.tick_ts !== S.lastTick) { S.lastTick = st.tick_ts; S.lastChange = Date.now(); record(st); }
   const stalled = !!sc && !S.paused && st.tick_ts !== null && Date.now() - S.lastChange > 12000;
   S.degraded = st.state === "DEGRADED_MONITORING" || (st.degraded || []).length > 0 || stalled;
-  if (S.degraded) showBanner("Monitoring degraded: " + ((st.degraded || []).join(", ") || "no new ticks for 12 s") + ". Actions are disabled.");
+  if (st.error) showBanner("Scenario runner failed: " + st.error);
+  else if (S.degraded) showBanner("Monitoring degraded: " + ((st.degraded || []).join(", ") || "no new ticks for 12 s") + ". Actions are disabled.");
   else if ($("banner").textContent.startsWith("Monitoring degraded")) showBanner("");
   drawHeat(st); drawMetrics(); drawRace(); drawCascade(); drawVerif(st);
   renderRec();
@@ -223,6 +224,21 @@ async function pollLog() {
     });
   } catch (e) { /* keep last */ }
 }
+async function pollRollbacks() {
+  try {
+    const rows = await (await fetch("/v1/rollbacks")).json(); const box = $("rb"); box.replaceChildren();
+    if (!rows.length) { box.textContent = "None."; return; }
+    rows.forEach((r) => {
+      const d = el("div", "", "act"); d.append(el("b", r.action), el("span", "  from " + r.rec_id + "  "));
+      const b = el("button", "Approve rollback"); b.disabled = S.degraded || !$("key").value;
+      b.addEventListener("click", async () => {
+        try { await api("/v1/rollbacks/" + encodeURIComponent(r.key) + "/approve", "POST", { operator: $("op").value || "operator1" }); pollRollbacks(); }
+        catch (e) { showBanner("Rollback failed: " + e.message); }
+      });
+      d.append(b); box.append(d);
+    });
+  } catch (e) { /* keep last */ }
+}
 async function pollPerf() {
   try {
     const m = await (await fetch("/v1/metrics")).json(); const kv = $("perf"); kv.replaceChildren();
@@ -238,7 +254,11 @@ function connect() {
   const es = new EventSource("/v1/stream");
   es.onopen = () => { $("h-conn").textContent = "stream live"; $("h-conn").className = "pill good"; };
   es.onerror = () => { $("h-conn").textContent = "stream offline"; $("h-conn").className = "pill bad"; };
-  es.addEventListener("alert", (e) => { S.alerts.push(JSON.parse(e.data)); });
+  es.addEventListener("alert", (e) => {
+    if (e.lastEventId && S.seen.has(e.lastEventId)) return;       // a reconnect replays the journal
+    if (e.lastEventId) S.seen.add(e.lastEventId);
+    S.alerts.push(JSON.parse(e.data)); if (S.alerts.length > 300) S.alerts.shift();
+  });
   ["recommendation", "decision", "incident"].forEach((k) => es.addEventListener(k, () => { pollRec(); pollLog(); }));
 }
 
@@ -281,5 +301,5 @@ async function loadArena() {
   root.append(el("p", "Recovery medians exclude runs that never recovered (see the not-recovered column). Best value per column in green.", "muted"));
 }
 
-pollState(); pollRec(); pollLog(); pollPerf(); connect();
-setInterval(pollState, 1000); setInterval(pollRec, 2500); setInterval(pollLog, 3000); setInterval(pollPerf, 5000);
+pollState(); pollRec(); pollLog(); pollPerf(); pollRollbacks(); connect();
+setInterval(pollState, 1000); setInterval(pollRec, 2500); setInterval(pollLog, 3000); setInterval(pollRollbacks, 3000); setInterval(pollPerf, 5000);
