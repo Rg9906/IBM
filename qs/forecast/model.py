@@ -15,6 +15,9 @@ from qs.schema import ForecastState
 
 EMA = 0.5
 WATCH, CRITICAL = 0.3, 0.5
+# The training data holds only ticks after a trigger starts, so healthy states are out of domain. Below these
+# levels there is no congestion to forecast from and p_stuck is reported as 0.
+CALM_DELAY, CALM_Q, CALM_TIMEOUT = 0.1, 0.02, 0.02
 
 
 def state_of(p: float, watch: float = WATCH, critical: float = CRITICAL) -> ForecastState:
@@ -65,7 +68,9 @@ class CascadeForecaster:
             if r.segment[0] != "gateway" or self.grid is None:
                 continue
             v = self._vector(r)
-            if self.ensemble is not None:
+            if v[1] < CALM_DELAY and v[0] < CALM_Q and v[5] < CALM_TIMEOUT:
+                p = 0.0
+            elif self.ensemble is not None:
                 p = float(self.ensemble.predict_proba(v[None, :])[0, 1])
             else:
                 p = float(self.grid.predict(v[FEATURES.index("delay_frac")], v[FEATURES.index("orbit_frac")])[0])

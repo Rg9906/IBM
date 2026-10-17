@@ -32,9 +32,10 @@ TABLES = {
 
 class Store:
     def __init__(self, path: str, cfg: Optional[LifecycleConfig] = None,
-                 clock: Callable[[], float] = time.monotonic) -> None:
+                 clock: Callable[[], float] = time.monotonic, auto_flush: bool = True) -> None:
         self.cfg = cfg or LifecycleConfig()
         self._clock = clock
+        self.auto_flush = auto_flush      # False keeps writes off the request path; the tick thread flushes
         new = path != ":memory:" and not os.path.exists(path)
         self.db = sqlite3.connect(path, check_same_thread=False)
         if path != ":memory:":
@@ -58,7 +59,8 @@ class Store:
         self._n += 1
         if self._first_ts is None:
             self._first_ts = self._clock()
-        self.flush_if_due()
+        if self.auto_flush:
+            self.flush_if_due()
 
     def append_many(self, table: str, rows: list) -> None:
         for r in rows:
@@ -66,7 +68,8 @@ class Store:
         self._n += len(rows)
         if rows and self._first_ts is None:
             self._first_ts = self._clock()
-        self.flush_if_due()
+        if self.auto_flush:
+            self.flush_if_due()
 
     def flush_if_due(self) -> bool:
         if self._n and (self._n >= self.cfg.batch_rows
