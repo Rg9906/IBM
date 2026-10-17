@@ -1,0 +1,27 @@
+# Deviations and assumptions, one line each.
+- WP-01: ids use 7-digit event counters (run42-0001837) and 6-digit payment numbers to match the 8.1 example.
+- WP-01: docs/BLUEPRINT.md and AGENTS.md do not exist under those names; the blueprint is the long-named file in docs/ and the rules are docs/Agents.md.
+- WP-01: Event enforces gateway_id in G1-G3, bank_id in B1-B5 and is_retry == (retry_count > 0), which 8.1 implies but does not state.
+- WP-01: dev dependencies pydantic, pyyaml, numpy, pytest installed in a scratch venv with pip --trusted-host (SSL interception on dev machine); not yet pinned in requirements.txt.
+- WP-02: events have no delay_ms, check_no, action or service-start fields (not in 8.1), so RETRY_SCHEDULED carries only retry_count; ACTION_APPLIED puts the action id in error_code (prefix ROLLBACK: on rollback) with payment_id "none".
+- WP-02: expired_ratio (10.2) has no event source because late completions after a client timeout are not observable; WP-04 must emit NaN for it.
+- WP-02: capacity-loss faults (S4) lower the effective worker count and SERVICE_SNAPSHOT reports it as configured_capacity; the shed_expired 1 ms cost is ignored.
+- WP-02: blackholed attempts hold a worker for normal service, then stay UNRESOLVED (status UNKNOWN) until resolve_ms, when they commit silently.
+- WP-02: Little law test uses the engine exact time integrals, not sampled snapshots (too noisy at utilisation 0.55).
+- WP-02: tape.py is written in WP-02 because the engine needs it; WP-03 uses it unchanged. Per-attempt draws cover at most 6 attempts.
+- WP-03: calibration (9.9) changed queue_max from 400 to 3000 (client timeout 3000, cap 5, utilisation 0.55 kept). With 400 no (m, d) cell ever stuck because retries are routed per attempt across 3 gateways and G1 offered load stays below 100/s; with 3000 the stale queue outlasts the 60-120 s window. The mechanism is stale-queue lock-in amplified by retries, not an unbounded retry loop: offered load on G1 after the trigger is below capacity, so say lock-in, and check the 13.9 wording before calling it metastable.
+- WP-03: stuck is judged on successes of the affected gateway (G1) because the other two gateways keep platform goodput above 50 percent.
+- WP-03: dev dependency matplotlib added for the heat map only (optional import).
+- WP-04: received_timestamp is not set by ingest (Event is frozen and copying costs per event); nothing reads it yet.
+- WP-04: latency quantiles use SUCCESS, DECLINED and CLIENT_TIMEOUT outcomes (timeouts at the client timeout keep p95 informative under overload); fast rejects are excluded.
+- WP-04: queue_delay_est is in seconds, capped at 60 s, with completions/s = (SUCCESS+DECLINED)/Ws floored at 0.1; under heavy timeouts few completions are visible, so the estimate rises as intended.
+- WP-04: load_over_capacity uses nominal est_service_ms=400 (blueprint 9.6) with snapshot configured_capacity; bank and route capacity are apportioned by observed attempt shares.
+- WP-04: Ingestor holds events until the watermark passes, so handlers see an ordered stream; Pipeline.tick must call release_until(tick_ts) before FeatureEngine.tick.
+- WP-04: gateways with no snapshots in the window count as zero queue/active (nan_to_num); degraded-monitoring detection of missing snapshots belongs to WP-06.
+- WP-05: S1 flash spike lowered from x2.5 to x2.0 (ScenarioParams.flash_mult). With queue_max 3000 a x2.5 flash for 20 s on top of the x1.6 surge tips the stale-queue collapse (D0/D1 fire ~25 s after it ends), which would make S1 an incident; x2.0 stays a benign surge. S1/S5 results must state this.
+- WP-05: FeatureRow gained an optional base dict (baseline means before the tick) and schema gained Alert; both are needed for reason codes and detector output.
+- WP-05: S_q and the surge gate treat queue_growth below 0.5 items/s as not growing (DetectorConfig.queue_growth_eps); strict sign tests flip on noise. S_q also requires a 50 ms absolute rise in queue_delay_est over baseline.
+- WP-05: D2 runs CUSUM on baseline z-scores of timeout_ratio and latency_ratio (no extra log), k = 0.5; h is tuned on set B in WP-13.
+- WP-05: qs/eval/replay.py (sim to ingest to features to detectors) was created early for training and tests; WP-13 extends it.
+- WP-05: scikit-learn 1.9.1 and rrcf added as dependencies (blueprint 19.1 lists both).
+- WP-05: 11.10 surge-gate criterion (>= 95 percent of S1 surge ticks labelled SURGE) is NOT met on set A: on A-S1-000/001 only about 80 percent of ticks with z(arrival_rate) >= 2.5 are labelled. The misses are the 30-40 s after the 20 s flash ends, where a real transient queue builds (queue_delay_est up to about 2.3 s, S_lat and S_q true, queue_growth positive), so the gate correctly refuses and the R arm raises a platform-wide alert (t=355 s and 300 s). Fixing it means changing flash_mult or the gate definition; left for the lead since the sim is frozen (rule 11).

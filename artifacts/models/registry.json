@@ -1,0 +1,62 @@
+{
+ "iforest": {
+  "model_name": "iforest",
+  "version": "if-7cd43b0f",
+  "sha256": "b9e62328651d32e521a9f370e6145b7946273465402290774f83e9ad19be4d0b",
+  "n_train": 21406,
+  "trained_on_seed_set": "A",
+  "seeds": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   13,
+   14,
+   19,
+   20,
+   25,
+   26,
+   31,
+   32,
+   37,
+   38,
+   43,
+   44
+  ],
+  "created_ts": "2026-10-17T09:59:13Z"
+ },
+ "iforest_ews": {
+  "model_name": "iforest_ews",
+  "version": "if-d17b6420",
+  "sha256": "2c759ae70b696acf711e0529fda63e383db653a9d53e6ab735324693da79afb7",
+  "n_train": 21406,
+  "trained_on_seed_set": "A",
+  "seeds": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   13,
+   14,
+   19,
+   20,
+   25,
+   26,
+   31,
+   32,
+   37,
+   38,
+   43,
+   44
+  ],
+  "created_ts": "2026-10-17T10:01:28Z"
+ }
+}

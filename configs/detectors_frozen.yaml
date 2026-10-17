@@ -1,0 +1,6 @@
+# Skeleton. Tuned and frozen on set B (blueprint 11.7); these are placeholders.
+theta0: 0.90
+sensitivity: 1.0
+cusum_h: 5.0
+tau: 0.99
+tau_hi: 0.999

@@ -1,0 +1,5 @@
+# Skeleton. Values mirror blueprint 15.1 and 14.4.
+throttle_rate_fraction: 0.10
+throttle_retry_after_ms: 2000
+shift_max_fraction: 0.25
+shift_min_spare: 0.30

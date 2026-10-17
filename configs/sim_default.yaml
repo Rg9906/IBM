@@ -1,0 +1,20 @@
+# Chosen by scripts/tune_metastability.py (blueprint 9.9); see docs/DEVIATIONS.md. Freeze with tag sim-frozen.
+n_gateways: 3
+n_banks: 5
+bank_shares: [0.30, 0.25, 0.20, 0.15, 0.10]
+workers: 40
+queue_max: 3000
+gateway_service_mean_ms: 100.0
+gateway_service_cv: 0.5
+bank_service_mean_ms: 300.0
+bank_service_cv: 0.6
+fresh_rate_per_s: 165.0
+client_timeout_ms: 3000
+p_retry: 0.9
+hard_decline_rate: 0.02
+overload_reject_ms: 5
+status_check_cost_frac: 0.25
+run_length_s: 600
+warmup_s: 120
+tail_s: 120
+tick_ms: 5000

@@ -1,0 +1,8 @@
+# Skeleton. Values mirror blueprint 12.2.
+first_check_delay_ms: 10000
+check_backoff_factor: 1.5
+jitter: 0.20
+max_checks_per_payment: 3
+horizon_ms: 120000
+breaker_open_ms: 15000
+stop_codes: []
