@@ -188,7 +188,7 @@ def stage_score(a) -> None:
                                                 "median": (e["median_iqr"] or [None])[0]} for s, e in v["by_scenario"].items()}}
                         for k, v in base["arms"].items() if k in ("D3", "D3:R")}
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / "ablation.json").write_text(json.dumps(out, indent=1))
+    (OUT / ("ablation.json" if a.set == "C" else f"ablation_{a.set}.json")).write_text(json.dumps(out, indent=1))
     print(json.dumps({k: (v["fa_per_hour_all"], v["fa_per_hour_S0_S1"]) for k, v in out["arms"].items()}))
 
 

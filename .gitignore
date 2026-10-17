@@ -5,3 +5,4 @@ desktop.ini
 .venv/
 artifacts/nab/
 results/exploratory/*.tmp
+artifacts/ablation/

@@ -14,14 +14,15 @@ from pathlib import Path
 import numpy as np
 
 SCENARIOS = ["S0", "S1", "S2", "S3", "S4", "S5", "S6", "S7"]
-SEED_BASE = {"A": 1, "B": 1000, "C": 2000}
-SEED_MAX = {"A": 999, "B": 1999, "C": 2999}
-ONSETS = {"A": list(range(160, 301, 20)), "B": list(range(150, 291, 20)), "C": list(range(155, 306, 10))}
-SET_CODE = {"A": 11, "B": 12, "C": 13}
+SEED_BASE = {"A": 1, "B": 1000, "C": 2000, "D": 3000}
+SEED_MAX = {"A": 999, "B": 1999, "C": 2999, "D": 3999}
+ONSETS = {"A": list(range(160, 301, 20)), "B": list(range(150, 291, 20)), "C": list(range(155, 306, 10)),
+          "D": list(range(152, 303, 10))}      # D: confirmation set, same distribution as C, new seeds and onsets
+SET_CODE = {"A": 11, "B": 12, "C": 13, "D": 14}
 
 
 def _draw(rng, name: str, sc: str, i: int) -> dict:
-    c = name == "C"
+    c = name in ("C", "D")
     gws = ["G1", "G2", "G3"] if c else ["G1", "G2"]
     banks = ["B1", "B2", "B3", "B4", "B5"] if c else ["B1", "B2", "B3"]
     gw = str(rng.choice(gws))
@@ -50,7 +51,7 @@ def _draw(rng, name: str, sc: str, i: int) -> dict:
 def make_configs(name: str, n: int, seed: int = 0) -> list:
     """n configurations per scenario for set `name`; deterministic given (name, n, seed)."""
     if name not in SEED_BASE:
-        raise ValueError("set must be A, B or C")
+        raise ValueError("set must be A, B, C or D")
     out = []
     k = 0
     for si, sc in enumerate(SCENARIOS):

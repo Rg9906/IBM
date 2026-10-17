@@ -1,0 +1,16 @@
+{
+ "RM-EWS": {
+  "tau": 1.0,
+  "fa_per_hour_on_B": 1.2337227679424414,
+  "budget": 1.5,
+  "budget_met": true,
+  "wall_s": 54.653334700000414
+ },
+ "RM-RRCF": {
+  "tau": 1.0,
+  "fa_per_hour_on_B": 1.8031332762235683,
+  "budget": 1.5,
+  "budget_met": false,
+  "wall_s": 753.1919799999996
+ }
+}

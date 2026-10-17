@@ -105,7 +105,7 @@ def stage_detect(a) -> None:
         pb.update({"d3_only_detected": sum(1 for c in d3 if d3[c] is not None and other.get(c) is None),
                    "other_only_detected": sum(1 for c in d3 if d3[c] is None and other.get(c) is not None)})
         summary["pairs"][arm] = pb
-    _save("detection.json", summary)
+    _save(a.detect_out, summary)
     print(json.dumps({k: v["fa_per_hour_all"] for k, v in summary["arms"].items()}, indent=1))
 
 
@@ -330,6 +330,7 @@ def main() -> None:
     ap.add_argument("--universes", default="U0,U1,U2,U3")
     ap.add_argument("--delays", default="20000")
     ap.add_argument("--out", default="arena.json")
+    ap.add_argument("--detect-out", default="detection.json", help="file under results/ for the detect stage")
     a = ap.parse_args()
     {"detect": stage_detect, "arena": stage_arena, "s6": stage_s6, "forecast": stage_forecast,
      "report": stage_report}[a.stage](a)
