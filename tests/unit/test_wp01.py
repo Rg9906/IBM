@@ -127,7 +127,8 @@ def test_config_rejects_unknown_and_is_frozen():
         cfg.tick_ms = 1  # type: ignore[misc]
 
 
-def test_pipeline_stub_importable_and_raises():
+def test_pipeline_constructs_and_has_contract_methods():
     from qs.core.pipeline import Pipeline
-    with pytest.raises(NotImplementedError):
-        Pipeline(PipelineConfig())
+    p = Pipeline(PipelineConfig(), models_dir="no-such-dir")      # no models: rule-only detector
+    assert p.d3.mode == "R" and p.pending_actions() == []
+    assert p.ingest([]).accepted == 0
