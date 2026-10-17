@@ -58,5 +58,18 @@
    44
   ],
   "created_ts": "2026-10-17T10:01:28Z"
+ },
+ "cascade_forecaster": {
+  "model_name": "cascade_forecaster",
+  "version": "cf-aba9c31d",
+  "sha256": "aba9c31d4b46903594af9a5416fcff40da870dabc3f8642b13a25d00d72f3a8b",
+  "grid_sha256": "d4d6f5be7994e2aa0f97b76cc2c893d913b2fa18d6fecb4af3f6bd2ccc7fd4be",
+  "trained_on_seed_set": "A",
+  "n_runs": {
+   "A": 600,
+   "B": 200,
+   "C": 200
+  },
+  "created_ts": "2026-10-17T11:28:12Z"
  }
 }

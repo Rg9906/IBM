@@ -27,7 +27,7 @@ class ReplayResult:
 
 def replay(scenario: str, seed: int, arm: str, sim_cfg: SimConfig, params: Optional[ScenarioParams] = None,
            detectors: Optional[list] = None, collect_rows: bool = False, feature_cfg: Optional[FeatureConfig] = None,
-           tick_ms: int = 5000, horizon_ms: Optional[int] = None, watermark_ms: int = 2000) -> ReplayResult:
+           tick_ms: int = 5000, horizon_ms: Optional[int] = None, watermark_ms: int = 2000, tap=None) -> ReplayResult:
     fe = FeatureEngine(feature_cfg, tick_ms=tick_ms)
     ing = Ingestor([lambda e, late: (fe.tracker.apply(e, late), fe.ingest(e, late))], watermark_ms=watermark_ms)
     dets = detectors or []
@@ -47,6 +47,8 @@ def replay(scenario: str, seed: int, arm: str, sim_cfg: SimConfig, params: Optio
         state["next"] += tick_ms
 
     def sink(evs: list) -> None:
+        if tap is not None:
+            tap(evs)
         ing.ingest(evs)
         while ing.max_ts >= state["next"] + watermark_ms:
             do_tick()
