@@ -1,0 +1,41 @@
+[
+  {
+    "arm": "no_verification",
+    "peak_status_check_rate": 0.0,
+    "total_checks": 0,
+    "peak_queue_depth": 0,
+    "duplicate_commits": 1344,
+    "resolved": 0,
+    "resolve_p50_s": null,
+    "resolve_p95_s": null,
+    "escalated": null,
+    "timeouts": 1065,
+    "config_id": "B-S6-000"
+  },
+  {
+    "arm": "naive_verify",
+    "peak_status_check_rate": 674.8,
+    "total_checks": 63360,
+    "peak_queue_depth": 235,
+    "duplicate_commits": 0,
+    "resolved": 0,
+    "resolve_p50_s": null,
+    "resolve_p95_s": null,
+    "escalated": null,
+    "timeouts": 1056,
+    "config_id": "B-S6-000"
+  },
+  {
+    "arm": "governed",
+    "peak_status_check_rate": 17.4,
+    "total_checks": 2395,
+    "peak_queue_depth": 0,
+    "duplicate_commits": 0,
+    "resolved": 348,
+    "resolve_p50_s": 105.3265,
+    "resolve_p95_s": 114.75945,
+    "escalated": 717,
+    "timeouts": 1065,
+    "config_id": "B-S6-000"
+  }
+]
