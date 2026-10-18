@@ -13,6 +13,7 @@ Start with the pieces that matter most:
 | [results/summary.md](results/summary.md) | Generated result tables (set C) |
 | [docs/RESULTS.md](docs/RESULTS.md) | Plain-language reading of those results, including where QueueShield does not win |
 | [docs/REPORT.md](docs/REPORT.md), [docs/DEMO.md](docs/DEMO.md) | Technical report; demo script and checklist |
+| [docs/EXPLORATORY.md](docs/EXPLORATORY.md), [docs/EVAL_D.md](docs/EVAL_D.md) | NAB check, ablations, sweeps, pre-registered confirmation set D |
 | [docs/CLAIMS.md](docs/CLAIMS.md) | What may and may not be said about the project |
 | [docs/DEVIATIONS.md](docs/DEVIATIONS.md) | Every assumption and departure from the blueprint |
 | [docs/QueueShield v2 Complete Implementation Blueprint (IBM Z Datathon 2026).md](docs/QueueShield%20v2%20Complete%20Implementation%20Blueprint%20(IBM%20Z%20Datathon%202026).md) | The full specification |
@@ -33,7 +34,7 @@ Start with the pieces that matter most:
 | WP-00 and WP-14: LinuxONE environment check and benchmarks | **Not done**; no platform measurements exist |
 | WP-15: report and demo script | [docs/REPORT.md](docs/REPORT.md) and [docs/DEMO.md](docs/DEMO.md) written; **video not recorded** |
 | `pyproject.toml`, `requirements.txt`, `Makefile` | Present. Tests verified (134 pass); the Makefile was not run (`make` is not installed on the dev machine) |
-| Public benchmark (blueprint 17.8) and ablations beyond D3:M and D3:R | **Not run** |
+| Public benchmark (NAB), RRCF and EWS ablations, S4 sensitivity sweeps, confirmation set D | Done, exploratory: [docs/EXPLORATORY.md](docs/EXPLORATORY.md). Surge-size and low-volume-route sweeps not run |
 
 ## Setup
 
@@ -57,7 +58,7 @@ Run everything from the repository root; scripts read `configs/` and write under
 python -m pytest -q            # tests/unit, one file per work package
 ```
 
-Each `tests/unit/test_wpNN.py` holds the acceptance tests for that work package. 134 tests passed on Python 3.13 with the versions in `requirements.txt`.
+Each `tests/unit/test_wpNN.py` holds the acceptance tests for that work package. 140 tests passed on Python 3.13 with the versions in `requirements.txt`.
 
 ## Run the live demo (API only)
 
@@ -66,7 +67,7 @@ set QS_API_KEY=changeme        # PowerShell: $env:QS_API_KEY="changeme"
 uvicorn --factory qs.api.app:create_app --port 8000
 ```
 
-Open http://localhost:8000 for the console (paste the key into the box), or run `python scripts/demo.py`. Over HTTP:
+Set `QS_DETECTOR_MODE=R` to run the rules-only detector, which raised fewer false alerts on the confirmation set (docs/EXPLORATORY.md); the default `RM` is what the frozen results used. Open http://localhost:8000 for the console (paste the key into the box), or run `python scripts/demo.py`. Over HTTP:
 
 ```bash
 curl -X POST localhost:8000/v1/sim/scenario -H "X-QS-Key: changeme" -H "Content-Type: application/json" \
@@ -95,6 +96,15 @@ python scripts/run_eval.py arena  --set C --scenarios S3,S4    # P3, P4
 python scripts/run_eval.py s6                                  # P5
 python scripts/run_eval.py forecast                            # P6
 python scripts/run_eval.py report                              # writes results/summary.md
+
+# Exploratory (outputs under results/exploratory/; never touch the frozen configs or results/detection.json)
+python scripts/public_benchmark.py                             # NAB sanity check; downloads data to artifacts/nab (git-ignored)
+python scripts/run_ablation.py train && python scripts/run_ablation.py tune && python scripts/run_ablation.py score
+python scripts/run_sweeps.py                                   # S4 sensitivity sweeps on set B
+python scripts/cache_rows.py --set D --n 30                    # confirmation set D (docs/EVAL_D.md); rows are git-ignored
+python scripts/run_eval.py detect --set D --detect-out exploratory/detection_D.json
+python scripts/run_ablation.py score --set D
+python scripts/run_eval.py arena --set D --n 30 --scenarios S3,S4 --out exploratory/arena_D.json
 ```
 
 Set C must be scored once (EVAL rule 6). `results/MANIFEST.json` records the git commit, config hashes and stage timestamps for the committed run. The exact sizes and arguments used for the committed results are not recorded beyond that manifest and `results/summary.md`; the dataset sizes are in DEVIATIONS (WP-08, WP-13).

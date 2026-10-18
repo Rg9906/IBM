@@ -31,6 +31,10 @@ What worked: the Governor removes the verification storm at a stated cost; Queue
 
 What did not: the learned model added nothing over the rules (D3 equals D3:R), the false-alert budget is not held out of sample, localisation of bank-side faults is weak when a slow bank saturates every gateway, and simple baselines (failover for a capacity loss, disciplined retry hygiene) are strong. Where U1 or U2 beats U3 this is reported rather than hidden.
 
+## 5b. Exploratory results
+
+Full detail in [EXPLORATORY.md](EXPLORATORY.md). (1) Rules only (D3:R) beat the full detector on the pre-registered confirmation set D: 2.52 against 5.95 false alert groups per hour on S0+S1, 57 against 60 missed incidents, at the cost of about 5 s of detection delay; the learned model is therefore not justified by these results. (2) RRCF and critical-slowing-down features did not help. (3) On the public NAB server-metric series the three generic detectors (CUSUM, Isolation Forest, RRCF) detect 5 to 8 of 9 labelled windows at about one false alert per day; this is a sanity check on non-payment data, not evidence about payments. (4) The S4 benefit of QueueShield depends on the approval delay: recovery 0 s at 5 and 15 s, 64 s at 120 s against 74 s for doing nothing. (5) The S4 arena findings replicate on set D with the same signs.
+
 ## 6. Threats to validity
 
 - The simulator is ours; mechanisms (stale-queue lock-in, retry amplification) are plausible, not validated against real traffic. The metastability calibration changed the queue limit from 400 to 3000 (DEVIATIONS WP-03).
@@ -40,12 +44,12 @@ What did not: the learned model added nothing over the rules (D3 equals D3:R), t
 - Operator behaviour is a simulated approval delay and confidence threshold, not human behaviour.
 - The forecast is trained on post-trigger ticks only; a quiet-traffic guard is a patch (WP-11).
 - Sample sizes are small for some comparisons (S4 recovery uses 9 pairs); intervals are shown.
-- The RRCF and EWS arms exist but were not run; the public benchmark was not run.
+- The NAB check uses nine labelled windows. Set D was read only after its questions were registered, but the question itself came from set C results.
 
 ## 7. Reproduction
 
-`requirements.txt` and `Makefile` (see README); `results/MANIFEST.json` stores the commit and config hashes of the committed run. Unit and API tests: 134 tests pass on Python 3.13 (`python -m pytest -q`).
+`requirements.txt` and `Makefile` (see README); `results/MANIFEST.json` stores the commit and config hashes of the committed run. Unit and API tests: 140 tests pass on Python 3.13 (`python -m pytest -q`).
 
 ## 8. Not done
 
-LinuxONE environment check, latency and throughput benchmarks, any Telum or accelerator work; the public non-payment benchmark; further ablations and sensitivity sweeps; a recorded video; a visual check of the dashboard in a browser (the browser tool was unavailable; the console was exercised through its API and the JS was syntax-checked only).
+LinuxONE environment check, latency and throughput benchmarks, any Telum or accelerator work; surge-size and low-volume-route sweeps; a recorded video; a visual check of the dashboard in a browser (the browser tool was unavailable; the console was exercised through its API and the JS was syntax-checked only).

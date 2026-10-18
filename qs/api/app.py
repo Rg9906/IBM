@@ -36,6 +36,15 @@ MAX_FIRST_TS_MS = 7 * 86_400_000         # absolute cap for the first event of a
 UI_DIR = Path(__file__).resolve().parent.parent / "ui" / "static"
 
 
+def detector_mode() -> Optional[str]:
+    """QS_DETECTOR_MODE: R (rules only), RM (rules + Isolation Forest, default). R raised fewer false alerts on the
+    confirmation set (docs/EVAL_D.md) but the frozen evaluation results were produced with RM."""
+    m = os.environ.get("QS_DETECTOR_MODE")
+    if m and m not in ("R", "RM"):
+        raise ValueError("QS_DETECTOR_MODE must be R or RM")
+    return m or None
+
+
 class State:
     def __init__(self, models_dir: str, key: Optional[str], store=None) -> None:
         self.models_dir = models_dir
@@ -43,7 +52,7 @@ class State:
         if not (key or os.environ.get("QS_API_KEY")):
             log.warning("QS_API_KEY not set; generated key: %s", self.key)
         self.lock = threading.RLock()
-        self.pipe = Pipeline(PipelineConfig(), store=store, models_dir=models_dir)
+        self.pipe = Pipeline(PipelineConfig(), store=store, models_dir=models_dir, detector_mode=detector_mode())
         self.events: list = []                 # SSE journal of dicts
         self.seq = 0                           # monotonic SSE id; never reset, so reconnecting clients stay consistent
         self.error: Optional[str] = None
@@ -256,7 +265,7 @@ def create_app(models_dir: str = "artifacts/models", api_key: Optional[str] = No
         st.stop = threading.Event()
         with st.lock:
             st.error = None
-            st.pipe = Pipeline(PipelineConfig(), store=store, models_dir=models_dir)
+            st.pipe = Pipeline(PipelineConfig(), store=store, models_dir=models_dir, detector_mode=detector_mode())
             op = SimulatedOperator(OperatorConfig(approval_delay_ms=delay_ms)) \
                 if body.get("auto_operator", False) else None
             st.run = LiveRun(sc, seed, body.get("arm", "U3"), pipeline=st.pipe, operator=op, on_tick=after_tick)

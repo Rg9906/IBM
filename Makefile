@@ -1,7 +1,7 @@
 # Targets mirror the README "Reproduce the evaluation" order. Run from the repository root.
 PY ?= python
 
-.PHONY: demo export-log test serve configs calibrate datasets train rows tune eval-detect eval-arena eval-s6 eval-forecast report
+.PHONY: nab ablation sweeps demo export-log test serve configs calibrate datasets train rows tune eval-detect eval-arena eval-s6 eval-forecast report
 
 test:
 	$(PY) -m pytest -q
@@ -49,3 +49,14 @@ demo:
 
 export-log:
 	curl -s localhost:8000/v1/decisions.csv -o artifacts/results/decision_log.csv
+
+nab:
+	$(PY) scripts/public_benchmark.py
+
+ablation:
+	$(PY) scripts/run_ablation.py train
+	$(PY) scripts/run_ablation.py tune
+	$(PY) scripts/run_ablation.py score
+
+sweeps:
+	$(PY) scripts/run_sweeps.py

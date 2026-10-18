@@ -1,0 +1,467 @@
+{
+ "note": "exploratory; arms not in the pre-registered P1 to P6; D3 copied from results/detection.json",
+ "arms": {
+  "RM-EWS": {
+   "tau": 1.0,
+   "by_scenario": {
+    "S0": {
+     "n_incidents": 0,
+     "missed": 0,
+     "delays": [],
+     "false_groups": 0,
+     "quiet_s": 17850.0,
+     "median": null
+    },
+    "S1": {
+     "n_incidents": 0,
+     "missed": 0,
+     "delays": [],
+     "false_groups": 98,
+     "quiet_s": 17850.0,
+     "median": null
+    },
+    "S2": {
+     "n_incidents": 30,
+     "missed": 27,
+     "delays": [
+      23.0,
+      28.0,
+      28.0
+     ],
+     "false_groups": 0,
+     "quiet_s": 6910.0,
+     "median": 28.0
+    },
+    "S3": {
+     "n_incidents": 30,
+     "missed": 2,
+     "delays": [
+      18.0,
+      23.0,
+      23.0,
+      23.0,
+      18.0,
+      18.0,
+      23.0,
+      18.0,
+      23.0,
+      18.0,
+      18.0,
+      18.0,
+      18.0,
+      18.0,
+      23.0,
+      18.0,
+      18.0,
+      18.0,
+      18.0,
+      18.0,
+      18.0,
+      18.0,
+      23.0,
+      18.0,
+      18.0,
+      18.0,
+      33.0,
+      23.0
+     ],
+     "false_groups": 0,
+     "quiet_s": 6520.0,
+     "median": 18.0
+    },
+    "S4": {
+     "n_incidents": 30,
+     "missed": 0,
+     "delays": [
+      18.0,
+      23.0,
+      18.0,
+      18.0,
+      18.0,
+      18.0,
+      23.0,
+      18.0,
+      18.0,
+      18.0,
+      18.0,
+      18.0,
+      18.0,
+      18.0,
+      28.0,
+      18.0,
+      18.0,
+      18.0,
+      33.0,
+      23.0,
+      28.0,
+      18.0,
+      18.0,
+      18.0,
+      18.0,
+      18.0,
+      28.0,
+      23.0,
+      18.0,
+      28.0
+     ],
+     "false_groups": 0,
+     "quiet_s": 7050.0,
+     "median": 18.0
+    },
+    "S5": {
+     "n_incidents": 30,
+     "missed": 0,
+     "delays": [
+      18.0,
+      18.0,
+      18.0,
+      18.0,
+      18.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      23.0,
+      23.0,
+      18.0,
+      23.0,
+      13.0,
+      13.0,
+      18.0,
+      13.0,
+      18.0,
+      18.0,
+      23.0,
+      23.0,
+      23.0,
+      18.0,
+      23.0,
+      18.0,
+      13.0,
+      23.0,
+      23.0,
+      13.0,
+      18.0
+     ],
+     "false_groups": 0,
+     "quiet_s": 6870.0,
+     "median": 18.0
+    },
+    "S6": {
+     "n_incidents": 30,
+     "missed": 29,
+     "delays": [
+      38.0
+     ],
+     "false_groups": 0,
+     "quiet_s": 7300.0,
+     "median": 38.0
+    },
+    "S7": {
+     "n_incidents": 30,
+     "missed": 30,
+     "delays": [],
+     "false_groups": 0,
+     "quiet_s": 8064.951000000002,
+     "median": null
+    }
+   },
+   "fa_per_hour_all": 4.499142006732874,
+   "fa_per_hour_S0_S1": 9.882352941176471
+  },
+  "RM-RRCF": {
+   "tau": 1.0,
+   "by_scenario": {
+    "S0": {
+     "n_incidents": 0,
+     "missed": 0,
+     "delays": [],
+     "false_groups": 0,
+     "quiet_s": 17850.0,
+     "median": null
+    },
+    "S1": {
+     "n_incidents": 0,
+     "missed": 0,
+     "delays": [],
+     "false_groups": 76,
+     "quiet_s": 17850.0,
+     "median": null
+    },
+    "S2": {
+     "n_incidents": 30,
+     "missed": 26,
+     "delays": [
+      23.0,
+      123.0,
+      18.0,
+      18.0
+     ],
+     "false_groups": 0,
+     "quiet_s": 6910.0,
+     "median": 20.5
+    },
+    "S3": {
+     "n_incidents": 30,
+     "missed": 0,
+     "delays": [
+      18.0,
+      13.0,
+      13.0,
+      18.0,
+      13.0,
+      13.0,
+      18.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      8.0,
+      8.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      18.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      18.0,
+      18.0,
+      18.0
+     ],
+     "false_groups": 0,
+     "quiet_s": 6520.0,
+     "median": 13.0
+    },
+    "S4": {
+     "n_incidents": 30,
+     "missed": 0,
+     "delays": [
+      13.0,
+      8.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      8.0,
+      18.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      8.0,
+      13.0,
+      13.0
+     ],
+     "false_groups": 0,
+     "quiet_s": 7050.0,
+     "median": 13.0
+    },
+    "S5": {
+     "n_incidents": 30,
+     "missed": 0,
+     "delays": [
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      8.0,
+      13.0,
+      8.0,
+      18.0,
+      18.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      13.0,
+      8.0,
+      13.0,
+      18.0,
+      13.0,
+      18.0,
+      13.0,
+      13.0,
+      18.0,
+      13.0,
+      13.0,
+      13.0
+     ],
+     "false_groups": 0,
+     "quiet_s": 6870.0,
+     "median": 13.0
+    },
+    "S6": {
+     "n_incidents": 30,
+     "missed": 0,
+     "delays": [
+      13.0,
+      13.0,
+      18.0,
+      18.0,
+      13.0,
+      18.0,
+      13.0,
+      13.0,
+      18.0,
+      18.0,
+      13.0,
+      18.0,
+      13.0,
+      18.0,
+      13.0,
+      13.0,
+      18.0,
+      18.0,
+      18.0,
+      13.0,
+      18.0,
+      13.0,
+      13.0,
+      13.0,
+      18.0,
+      13.0,
+      18.0,
+      13.0,
+      13.0,
+      13.0
+     ],
+     "false_groups": 0,
+     "quiet_s": 7300.0,
+     "median": 13.0
+    },
+    "S7": {
+     "n_incidents": 30,
+     "missed": 30,
+     "delays": [],
+     "false_groups": 0,
+     "quiet_s": 8064.951000000002,
+     "median": null
+    }
+   },
+   "fa_per_hour_all": 3.4891305358336573,
+   "fa_per_hour_S0_S1": 7.663865546218488
+  }
+ },
+ "reference": {
+  "D3": {
+   "fa_per_hour_all": 1.9082901259805938,
+   "fa_per_hour_S0_S1": 4.235294117647059,
+   "by_scenario": {
+    "S0": {
+     "n_incidents": 0,
+     "missed": 0,
+     "median": null
+    },
+    "S1": {
+     "n_incidents": 0,
+     "missed": 0,
+     "median": null
+    },
+    "S2": {
+     "n_incidents": 30,
+     "missed": 29,
+     "median": 50.0
+    },
+    "S3": {
+     "n_incidents": 30,
+     "missed": 2,
+     "median": 15.0
+    },
+    "S4": {
+     "n_incidents": 30,
+     "missed": 0,
+     "median": 15.0
+    },
+    "S5": {
+     "n_incidents": 30,
+     "missed": 0,
+     "median": 15.0
+    },
+    "S6": {
+     "n_incidents": 30,
+     "missed": 18,
+     "median": 25.0
+    },
+    "S7": {
+     "n_incidents": 30,
+     "missed": 30,
+     "median": null
+    }
+   }
+  },
+  "D3:R": {
+   "fa_per_hour_all": 0.7269676670402262,
+   "fa_per_hour_S0_S1": 1.6134453781512605,
+   "by_scenario": {
+    "S0": {
+     "n_incidents": 0,
+     "missed": 0,
+     "median": null
+    },
+    "S1": {
+     "n_incidents": 0,
+     "missed": 0,
+     "median": null
+    },
+    "S2": {
+     "n_incidents": 30,
+     "missed": 27,
+     "median": 45.0
+    },
+    "S3": {
+     "n_incidents": 30,
+     "missed": 0,
+     "median": 15.0
+    },
+    "S4": {
+     "n_incidents": 30,
+     "missed": 0,
+     "median": 15.0
+    },
+    "S5": {
+     "n_incidents": 30,
+     "missed": 0,
+     "median": 15.0
+    },
+    "S6": {
+     "n_incidents": 30,
+     "missed": 0,
+     "median": 15.0
+    },
+    "S7": {
+     "n_incidents": 30,
+     "missed": 30,
+     "median": null
+    }
+   }
+  }
+ }
+}

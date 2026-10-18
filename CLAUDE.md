@@ -11,7 +11,7 @@ Payment-gateway degradation detection, forecasting, localisation and operator-ap
 - No ground truth, scenario names or trigger times inside `qs/core` or `qs/forecast` inference.
 - Record every assumption, deviation or new dependency as one line in docs/DEVIATIONS.md.
 - Never claim Telum, ML for z/OS, Secure Execution, production results or outage prediction. Follow docs/CLAIMS.md. Put "in simulation" next to outcome numbers.
-- Set C is scored once (docs/EVAL.md). Do not tune on it.
+- Set C is scored once (docs/EVAL.md); set D is the confirmation set (docs/EVAL_D.md), also scored once. Do not tune on either.
 
 ## Commands
 
@@ -29,9 +29,10 @@ A `Makefile` wraps these (untested end to end). Run from the repository root.
 
 ## Current status and open items
 
-Done: WP-01 to WP-13 (committed results on set C; console in `qs/ui/static`, not yet checked visually), report and demo script (docs/REPORT.md, docs/DEMO.md), pyproject, requirements. Not done: WP-00/WP-14 LinuxONE check and benchmarks, demo video, public benchmark, further ablations (RRCF/EWS arms).
+Done: WP-01 to WP-13 (committed results on set C; console in `qs/ui/static`, not yet checked visually), report and demo script (docs/REPORT.md, docs/DEMO.md), pyproject, requirements. Exploratory work done (docs/EXPLORATORY.md): NAB check, RRCF/EWS ablations, S4 sweeps, confirmation set D. Not done: WP-00/WP-14 LinuxONE check and benchmarks, demo video, surge-size and low-volume-route sweeps.
 
 Known issues worth knowing before changing things:
+- Rules-only D3:R beat the full D3 on false alerts on sets C and D (docs/EXPLORATORY.md); default not switched because the frozen arena used RM (`QS_DETECTOR_MODE=R` selects it). Unfixed review findings are listed in DEVIATIONS.
 - D3 does not beat D1 on delay and misses S2 and S7 almost entirely; it exceeds the false-alert budget on S0+S1 (4.24/h vs 1.5) on set C.
 - Forecaster has no positive lead time against collapse and 7 to 18 false criticals per hour on S1/S5; trained on post-trigger ticks only, patched by a quiet-traffic guard (DEVIATIONS WP-11).
 - The localizer gives INSUFFICIENT_EVIDENCE on most S2/S7 and weak bank-side results on S3.

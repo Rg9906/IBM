@@ -102,3 +102,12 @@ def test_rollback_proposal_needs_operator_and_is_approvable_over_http():
     assert c.post("/v1/rollbacks/rec-0001:SHED_EXPIRED/approve", headers=H, json={"operator": "op1"}).status_code == 200
     assert ap.rolled_back and c.get("/v1/rollbacks").json() == []
     assert c.post("/v1/rollbacks/rec-0001:SHED_EXPIRED/approve", headers=H, json={"operator": "op1"}).status_code == 409
+
+
+def test_detector_mode_env(monkeypatch):
+    monkeypatch.setenv("QS_DETECTOR_MODE", "R")
+    assert TestClient(create_app(api_key=KEY)).get("/v1/metrics").json()["detector_mode"] == "R"
+    monkeypatch.setenv("QS_DETECTOR_MODE", "bogus")
+    import pytest
+    with pytest.raises(ValueError):
+        create_app(api_key=KEY)
