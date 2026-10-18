@@ -30,10 +30,10 @@ Start with the pieces that matter most:
 | WP-10: policy engine, actions, simulated operator | Done |
 | WP-11: pipeline, HTTP API v1, live runner | Done (known gaps in DEVIATIONS) |
 | WP-13: evaluation harness and set C results | Done, scored once |
-| WP-12: dashboard (`qs/ui/static`, served at `/`) | Built; exercised through its API and syntax-checked, **not yet checked visually in a browser** |
+| WP-12: dashboard (`qs/ui/static`, served at `/`) | Built and checked visually in Chrome on 2026-10-18 (live heat map, segment chart, panels and arena tab render, no console errors; one S3 run only) |
 | WP-00 and WP-14: LinuxONE environment check and benchmarks | **Not done**; no platform measurements exist |
 | WP-15: report and demo script | [docs/REPORT.md](docs/REPORT.md) and [docs/DEMO.md](docs/DEMO.md) written; **video not recorded** |
-| `pyproject.toml`, `requirements.txt`, `Makefile` | Present. Tests verified (134 pass); the Makefile was not run (`make` is not installed on the dev machine) |
+| `pyproject.toml`, `requirements.txt`, `Makefile` | Present. Tests verified (140 pass); the Makefile was not run (`make` is not installed on the dev machine) |
 | Public benchmark (NAB), RRCF and EWS ablations, S4 sensitivity sweeps, confirmation set D | Done, exploratory: [docs/EXPLORATORY.md](docs/EXPLORATORY.md). Surge-size and low-volume-route sweeps not run |
 
 ## Setup

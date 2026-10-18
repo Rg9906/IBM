@@ -13,6 +13,7 @@ import os
 import secrets
 import threading
 import time
+from contextlib import asynccontextmanager
 from typing import Optional
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
@@ -93,7 +94,18 @@ def err(status: int, error: str, detail: str = "") -> JSONResponse:
 
 def create_app(models_dir: str = "artifacts/models", api_key: Optional[str] = None, store=None) -> FastAPI:
     st = State(models_dir, api_key, store)
-    app = FastAPI(title="QueueShield", version="1")
+    @asynccontextmanager
+    async def lifespan(_app: FastAPI):
+        yield
+        st.stop.set()
+        if st.thread:
+            st.thread.join(timeout=5)
+        with st.lock:
+            if store is not None:
+                for fn in ("flush", "close"):
+                    getattr(store, fn, lambda: None)()
+
+    app = FastAPI(title="QueueShield", version="1", lifespan=lifespan)
     app.state.qs = st
 
     def need_key(x_qs_key: Optional[str] = Header(default=None)) -> None:
@@ -369,16 +381,6 @@ def create_app(models_dir: str = "artifacts/models", api_key: Optional[str] = No
 
     if UI_DIR.exists():
         app.mount("/static", StaticFiles(directory=UI_DIR), name="static")
-
-    @app.on_event("shutdown")
-    def _shutdown() -> None:
-        st.stop.set()
-        if st.thread:
-            st.thread.join(timeout=5)
-        with st.lock:
-            if store is not None:
-                for fn in ("flush", "close"):
-                    getattr(store, fn, lambda: None)()
 
     @app.get("/v1/health")
     def health():

@@ -29,13 +29,13 @@ A `Makefile` wraps these (untested end to end). Run from the repository root.
 
 ## Current status and open items
 
-Done: WP-01 to WP-13 (committed results on set C; console in `qs/ui/static`, not yet checked visually), report and demo script (docs/REPORT.md, docs/DEMO.md), pyproject, requirements. Exploratory work done (docs/EXPLORATORY.md): NAB check, RRCF/EWS ablations, S4 sweeps, confirmation set D. Not done: WP-00/WP-14 LinuxONE check and benchmarks, demo video, surge-size and low-volume-route sweeps.
+Done: WP-01 to WP-13 (committed results on set C; console in `qs/ui/static`, checked visually once in Chrome), report and demo script (docs/REPORT.md, docs/DEMO.md), pyproject, requirements. Exploratory work done (docs/EXPLORATORY.md): NAB check, RRCF/EWS ablations, S4 sweeps, confirmation set D. Not done: WP-00/WP-14 LinuxONE check and benchmarks, demo video, surge-size and low-volume-route sweeps.
 
 Known issues worth knowing before changing things:
 - Rules-only D3:R beat the full D3 on false alerts on sets C and D (docs/EXPLORATORY.md); default not switched because the frozen arena used RM (`QS_DETECTOR_MODE=R` selects it). Unfixed review findings are listed in DEVIATIONS.
 - D3 does not beat D1 on delay and misses S2 and S7 almost entirely; it exceeds the false-alert budget on S0+S1 (4.24/h vs 1.5) on set C.
 - Forecaster has no positive lead time against collapse and 7 to 18 false criticals per hour on S1/S5; trained on post-trigger ticks only, patched by a quiet-traffic guard (DEVIATIONS WP-11).
 - The localizer gives INSUFFICIENT_EVIDENCE on most S2/S7 and weak bank-side results on S3.
-- The closed-loop run on B-S4-000 raised a spurious second incident whose cause is not investigated.
+- The closed-loop run on B-S4-000 raised a spurious second incident: a recovery-tail bank-B4 alert rewritten to the G1 localizer primary through wildcard overlap (DEVIATIONS WP-11 follow-up); unfixed.
 
 Keep this section aligned when work packages complete.
